@@ -24,19 +24,19 @@ public class MainCommand {
         switch (commandStringList[0]){
             //All the case checks need to be lowercase bc I converted the entire command to lowercase earlier
             case "help":
-                HelpRequestCommand helpCmd = new HelpRequestCommand();
+                HelpCommand helpCmd = new HelpCommand();
                 botMSG = helpCmd.Command();
                 break;
             case "pricenow":
-                PriceRequestCommand priceCmd = new PriceRequestCommand();
+                PriceCommand priceCmd = new PriceCommand();
                 botMSG = priceCmd.Command(commandStringList[1], "current");
                 break;
             case "lowprice":
-                PriceRequestCommand lowPriceCmd = new PriceRequestCommand();
+                PriceCommand lowPriceCmd = new PriceCommand();
                 botMSG = lowPriceCmd.Command(commandStringList[1], "lowest");
                 break;
             case "highprice":
-                PriceRequestCommand highPriceCmd = new PriceRequestCommand();
+                PriceCommand highPriceCmd = new PriceCommand();
                 botMSG = highPriceCmd.Command(commandStringList[1], "highest");
                 break;
             case "symbol":

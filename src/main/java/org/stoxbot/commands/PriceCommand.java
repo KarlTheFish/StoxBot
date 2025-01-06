@@ -3,7 +3,7 @@ package org.stoxbot.commands;
 import org.stoxbot.APIstuff.StockInfoFinnHub;
 
 
-public class PriceRequestCommand {
+public class PriceCommand {
     String requestSymbol;
 
     //Class for current, lowest, and the highest prices of the day

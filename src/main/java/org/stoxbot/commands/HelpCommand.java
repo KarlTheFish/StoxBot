@@ -1,6 +1,6 @@
 package org.stoxbot.commands;
 
-public class HelpRequestCommand {
+public class HelpCommand {
 
     public String Command() {
         String botMSG = "StoxBot commands:\n";
