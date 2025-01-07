@@ -51,4 +51,6 @@ public class APIrequest {
 
         return attrString;
     }
+
+    //TODO: Take json string as input, convert into Java objects
 }

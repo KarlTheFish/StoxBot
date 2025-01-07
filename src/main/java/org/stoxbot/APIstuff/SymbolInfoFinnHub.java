@@ -15,8 +15,10 @@ public class SymbolInfoFinnHub {
 
     public String SymbolToName(String symbolRequest){
         symbolRequest = symbolRequest.toUpperCase();
-        requestURL = "https://finnhub.io/api/v1/search?q=" + symbolRequest;
+        requestURL = "https://finnhub.io/api/v1/search?q=" + symbolRequest + "&" + APItoken;
 
+        apiResponse = new APIrequest(requestURL);
+        apiResponse.makeRequest();
 
         return "";
     }
