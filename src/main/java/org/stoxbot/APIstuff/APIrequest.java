@@ -32,7 +32,6 @@ public class APIrequest {
             e.printStackTrace();
         }
 
-        System.out.println(response.body());
         return response.body().toString();
     }
 
@@ -51,6 +50,4 @@ public class APIrequest {
 
         return attrString;
     }
-
-    //TODO: Take json string as input, convert into Java objects
 }

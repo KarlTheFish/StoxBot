@@ -19,7 +19,6 @@ public class StockInfoFinnHub {
 
         apiResponse = new APIrequest(requestURL);
         apiResponse.makeRequest();
-        System.out.println(apiResponse);
     }
 
     //These 3 methods convert the chosen attributes from json to string
