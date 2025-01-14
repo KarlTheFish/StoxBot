@@ -15,7 +15,6 @@ public class SymbolInfoFinnHub {
     private APIrequest apiRequest;
     String apiResponse;
     String requestURL;
-    String apiResponseString;
     String commandResponse = "default";
 
     public SymbolInfoFinnHub(String requestString) {
@@ -23,7 +22,7 @@ public class SymbolInfoFinnHub {
         APItoken = "token=" + Environment.getFinnhubAPIKey();
     }
 
-    public String SymbolToName(){
+    public String Search(){
         requestURL = "https://finnhub.io/api/v1/search?q=" + requestString.toUpperCase() + "&exchange=US&" + APItoken;
 
         apiRequest = new APIrequest(requestURL);
@@ -46,10 +45,8 @@ public class SymbolInfoFinnHub {
 
             String resultsString = results.get("result").toString();
 
-            //Let's make this result into a list of our custom FinnhubStockInfoClass
+            //Make this result into a list of our custom FinnhubStockInfoClass
             List<StockSearchFinnhub> SearchResultsList = objectMapper.readValue(resultsString, new TypeReference<List<StockSearchFinnhub>>() {});
-
-
 
             for (int i = 0; i < resultsAmount; i++){
                 commandResponse += "----- RESULT NO. " + (i + 1) + " -----\n";

@@ -1,6 +1,5 @@
 package org.stoxbot.commands;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import discord4j.core.object.entity.Message;
 import org.stoxbot.APIstuff.SymbolInfoFinnHub;
 import reactor.core.publisher.Mono;
@@ -41,14 +40,9 @@ public class MainCommand {
                 PriceCommand highPriceCmd = new PriceCommand();
                 botMSG = highPriceCmd.Command(commandStringList[1], "highest");
                 break;
-            case "symbol":
-                SymbolInfoFinnHub test = new SymbolInfoFinnHub(commandStringList[1]);
-                try {
-                    botMSG = test.SymbolToName();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    throw new RuntimeException(e);
-                }
+            case "search":
+                SymbolCommand symbolCmd = new SymbolCommand();
+                botMSG = symbolCmd.Command(commandStringList[1]);
                 break;
             default:
                 botMSG = "what";
