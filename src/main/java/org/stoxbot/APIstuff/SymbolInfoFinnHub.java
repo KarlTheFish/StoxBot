@@ -2,18 +2,21 @@ package org.stoxbot.APIstuff;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.stoxbot.Environment;
+import org.stoxbot.classes.StockSearchFinnhub;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class SymbolInfoFinnHub {
     private String requestString;
     private final String APItoken;
-    private APIrequest apiResponse;
+    private APIrequest apiRequest;
+    String apiResponse;
     String requestURL;
     String apiResponseString;
+    String commandResponse = "default";
 
     public SymbolInfoFinnHub(String requestString) {
         this.requestString = requestString;
@@ -21,18 +24,43 @@ public class SymbolInfoFinnHub {
     }
 
     public String SymbolToName(){
-        requestURL = "https://finnhub.io/api/v1/search?q=" + requestString.toUpperCase() + "&" + APItoken;
+        requestURL = "https://finnhub.io/api/v1/search?q=" + requestString.toUpperCase() + "&exchange=US&" + APItoken;
 
-        apiResponse = new APIrequest(requestURL);
-        apiResponse.makeRequest();
+        apiRequest = new APIrequest(requestURL);
+        apiResponse = apiRequest.makeRequest();
 
-        //Get the "result" part of the json response and convert into java class
-        //ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        apiResponseString = apiResponse.resJsonAttrToString("result");
+        try {
+            JsonNode results = objectMapper.readTree(apiResponse);
 
-        System.out.println(apiResponseString);
+            //Make sure the command displays only the first 5 results if there are more than 5
+            int resultsAmount = results.get("count").asInt();
+            if(resultsAmount > 5){
+                commandResponse = "Showing the first 5 results of your search: \n";
+                resultsAmount = 5;
+            }
+            else {
+                commandResponse = "Showing the results of your search: \n";
+            }
 
-        return apiResponseString;
+            String resultsString = results.get("result").toString();
+
+            //Let's make this result into a list of our custom FinnhubStockInfoClass
+            List<StockSearchFinnhub> SearchResultsList = objectMapper.readValue(resultsString, new TypeReference<List<StockSearchFinnhub>>() {});
+
+
+
+            for (int i = 0; i < resultsAmount; i++){
+                commandResponse += "----- RESULT NO. " + (i + 1) + " -----\n";
+                commandResponse += SearchResultsList.get(i) + "\n";
+            }
+
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return commandResponse;
     }
 }
