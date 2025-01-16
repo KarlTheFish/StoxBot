@@ -2,11 +2,15 @@ package org.stoxbot.commands;
 
 import org.stoxbot.APIstuff.StockInfoFinnHub;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 
 public class PriceCommand {
     String requestSymbol = "null";
+    String[] EasterEggNames = {"egon", "taavi", "karl", "kristo", "sander"};
 
     //Class for current, lowest, and the highest prices of the day
     //Since the commands are basically the same, I decided to put them into one class
@@ -15,7 +19,7 @@ public class PriceCommand {
         requestSymbol = userMessage.toString();
         if(requestSymbol.equals("null")){
             return "No stock symbol found!";
-        } else if (requestSymbol.equals("karl") || requestSymbol.equals("taavi") || requestSymbol.equals("kristo") || requestSymbol.equals("egon")) {
+        } else if (Arrays.asList(EasterEggNames).contains(requestSymbol)) {
             return priceEasterEgg(requestSymbol);
         }
         else {
@@ -41,7 +45,9 @@ public class PriceCommand {
             case "kristo":
                 return "Karl's friends' worth can not be put into money";
             case "egon":
-                return "Doesn't matter, you cannot exchange Karl's emotional support slenderman for money!";
+                return "You cannot exchange Karl's emotional support slenderman for money!";
+            case "sander":
+                return "You cannot buy Karl's child slave for money!";
             case "taavi":
                 Random rnd = new Random();
                 int rndInt = rnd.nextInt(100);
