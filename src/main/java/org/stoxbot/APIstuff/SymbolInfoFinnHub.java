@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.stoxbot.Environment;
 import org.stoxbot.classes.StockSearchFinnhub;
+import org.stoxbot.commands.SubcommandStatus;
 
 import java.util.List;
+
+import static org.stoxbot.Main.evokedCommand;
 
 public class SymbolInfoFinnHub {
     private String requestString;
@@ -16,6 +19,7 @@ public class SymbolInfoFinnHub {
     String apiResponse;
     String requestURL;
     String commandResponse = "default";
+    int startIndex = 0;
 
     public SymbolInfoFinnHub(String requestString) {
         this.requestString = requestString;
@@ -38,6 +42,8 @@ public class SymbolInfoFinnHub {
             if(resultsAmount > 5){
                 commandResponse = "Showing the first 5 results of your search: \n";
                 resultsAmount = 5;
+                //Adding "next" subcommand
+                evokedCommand.setSubCommandStatus(SubcommandStatus.SEARCH_STOCK);
             }
             else {
                 commandResponse = "Showing the results of your search: \n";
@@ -48,9 +54,9 @@ public class SymbolInfoFinnHub {
             //Make this result into a list of our custom FinnhubStockInfoClass
             List<StockSearchFinnhub> SearchResultsList = objectMapper.readValue(resultsString, new TypeReference<List<StockSearchFinnhub>>() {});
 
-            for (int i = 0; i < resultsAmount; i++){
-                commandResponse += "----- RESULT NO. " + (i + 1) + " -----\n";
-                commandResponse += SearchResultsList.get(i) + "\n";
+            for (startIndex = 0; startIndex < resultsAmount; startIndex++){
+                commandResponse += "----- RESULT NO. " + (startIndex + 1) + " -----\n";
+                commandResponse += SearchResultsList.get(startIndex) + "\n";
             }
 
 

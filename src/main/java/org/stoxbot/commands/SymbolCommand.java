@@ -16,7 +16,6 @@ public class SymbolCommand {
         }
         else {
             SymbolInfoFinnHub gettingInfo = new SymbolInfoFinnHub(requestSymbol);
-
             return gettingInfo.Search();
         }
     }

@@ -10,8 +10,15 @@ import org.stoxbot.commands.MainCommand;
 import reactor.core.publisher.Mono;
 
 public class Main {
+    public static DiscordClient client;
+    public static MainCommand evokedCommand;
+    public static SubcommandTool subcommandTool;
+
     public static void main(String[] args) {
-        DiscordClient client = DiscordClient.create(Environment.getDiscordToken());
+        client = DiscordClient.create(Environment.getDiscordToken());
+
+        //This will be needed later for subcommands
+        subcommandTool = new SubcommandTool();
 
         Mono<Void> login = client.withGateway((GatewayDiscordClient gateway) -> {
                     //Readyevent
@@ -26,7 +33,7 @@ public class Main {
                         Message message = event.getMessage();
 
                         if (message.getContent().startsWith("!stox ")) {
-                            MainCommand evokedCommand = new MainCommand("Karl", message);
+                            evokedCommand = new MainCommand("Karl", message);
                             return evokedCommand.EvokeCommand(message);
                         } else {
                             return Mono.empty();
