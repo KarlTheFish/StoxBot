@@ -16,6 +16,8 @@ public class SubcommandTool {
         return instance;
     }
 
+    private Object SubcommandParentObject;
+
     private SubcommandStatus status;
 
     public SubcommandTool(){
@@ -29,4 +31,18 @@ public class SubcommandTool {
     public SubcommandStatus getStatus() {
         return status;
     }
+
+    public void setParentObject(Object parentObject) {
+        SubcommandParentObject = parentObject;
+    }
+
+    public Object getParentObject() {
+        return SubcommandParentObject;
+    }
+
+    public void clearStatus(){
+        status = SubcommandStatus.NONE;
+        SubcommandParentObject = null;
+    }
+
 }

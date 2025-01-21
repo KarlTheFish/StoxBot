@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static org.stoxbot.Main.evokedCommand;
-
 public class SymbolInfoFinnHub {
     private String requestString;
     private final String APItoken;
@@ -22,8 +20,9 @@ public class SymbolInfoFinnHub {
     String apiResponse;
     String requestURL;
     String commandResponse = "default";
-    int startIndex = 0;
+    int i = 0;
     List<StockSearchFinnhub> SearchResults = new ArrayList<StockSearchFinnhub>();
+    SubcommandTool subcommandStatus = SubcommandTool.getInstance();
 
     public SymbolInfoFinnHub(String requestString) {
         this.requestString = requestString;
@@ -41,19 +40,6 @@ public class SymbolInfoFinnHub {
         try {
             JsonNode results = objectMapper.readTree(apiResponse);
 
-            //Make sure the command displays only the first 5 results if there are more than 5
-            int resultsAmount = results.get("count").asInt();
-            if(resultsAmount > 5){
-                commandResponse = "Showing the first 5 results of your search: \n";
-                resultsAmount = 5;
-                //Adding "next" subcommand
-                SubcommandTool subcommandStatus = SubcommandTool.getInstance();
-                subcommandStatus.setStatus(SubcommandStatus.SEARCH_STOCK);
-            }
-            else {
-                commandResponse = "Showing the results of your search: \n";
-            }
-
             String resultsString = results.get("result").toString();
 
             //Make this result into a list of our custom FinnhubStockInfoClass
@@ -67,13 +53,26 @@ public class SymbolInfoFinnHub {
                 }
             }
 
-            for (startIndex = 0; startIndex < SearchResults.size(); startIndex++){
-                commandResponse += "----- RESULT NO. " + (startIndex + 1) + " -----\n";
-                commandResponse += SearchResults.get(startIndex) + "\n";
+            //Make sure the command displays only the first 5 results if there are more than 5
+            if(SearchResults.size() > 5){
+                commandResponse = "Found " + SearchResults.size() + " results\n";
+                commandResponse += "Showing the first 5 results of your search: \n";
+                //Adding "next" subcommand
+                subcommandStatus.setStatus(SubcommandStatus.SEARCH_STOCK);
+                subcommandStatus.setParentObject(this);
+            }
+            else {
+                commandResponse = "Showing the results of your search: \n";
+            }
+
+            for (i = 0; i < 5; i++){
+                commandResponse += "----- RESULT NO. " + (i + 1) + " -----\n";
+                commandResponse += SearchResults.get(i) + "\n";
             }
 
 
         } catch (JsonProcessingException e) {
+            System.err.println(e.getMessage());
             throw new RuntimeException(e);
         }
 
@@ -81,6 +80,25 @@ public class SymbolInfoFinnHub {
     }
 
     public String getNextResults(){
-        return "";
+        commandResponse = "Showing page " + ((i / 5) + 1) + " of your search: \n";
+        int remainingResults = SearchResults.size() - i;
+        if(remainingResults > 5){
+            for(int j = i; j < i + 5; j++){
+                commandResponse += "----- RESULT NO. " + (j + 1) + " -----\n";
+                commandResponse += SearchResults.get(j) + "\n";
+                commandResponse += "Type !stox next to see the next page\n";
+            }
+            i = i + 5;
+        }
+        else {
+            for(int j = i; j < i + remainingResults; j++){
+                commandResponse += "----- RESULT NO. " + (j + 1) + " -----\n";
+                commandResponse += SearchResults.get(j) + "\n";
+                commandResponse += "Reached end of the results\n";
+            }
+            i = i + remainingResults;
+            subcommandStatus.clearStatus();
+        }
+        return commandResponse;
     }
 }

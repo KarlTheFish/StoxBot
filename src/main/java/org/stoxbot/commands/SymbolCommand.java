@@ -1,10 +1,11 @@
 package org.stoxbot.commands;
 
 import org.stoxbot.APIstuff.SymbolInfoFinnHub;
-import org.stoxbot.classes.StockSearchFinnhub;
+import org.stoxbot.SubcommandTool;
 
 public class SymbolCommand {
     String requestSymbol = "null";
+    SymbolInfoFinnHub gettingInfo;
 
     //Class for the search command
 
@@ -15,8 +16,15 @@ public class SymbolCommand {
             return "Please enter a stock symbol or name to find information about!";
         }
         else {
-            SymbolInfoFinnHub gettingInfo = new SymbolInfoFinnHub(requestSymbol);
+            gettingInfo = new SymbolInfoFinnHub(requestSymbol);
             return gettingInfo.Search();
         }
+    }
+
+    public String nextCommand(){
+        SubcommandTool subcommandTool = SubcommandTool.getInstance();
+        gettingInfo = (SymbolInfoFinnHub) subcommandTool.getParentObject();
+        return gettingInfo.getNextResults();
+        //return "next";
     }
 }
