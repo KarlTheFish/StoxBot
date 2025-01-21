@@ -1,9 +1,8 @@
 package org.stoxbot.commands;
 
 import discord4j.core.object.entity.Message;
+import org.stoxbot.SubcommandTool;
 import reactor.core.publisher.Mono;
-
-import static org.stoxbot.Main.subcommandTool;
 
 public class MainCommand {
     //General command class
@@ -13,7 +12,6 @@ public class MainCommand {
     String command;
     String[] commandStringList;
     String botMSG;
-    SubcommandStatus subCommandStatus;
 
     public MainCommand(String userName, Message userMessage) {
         this.userName = userName;
@@ -24,8 +22,8 @@ public class MainCommand {
     public Mono<Message> EvokeCommand(Message userMessage) {
         command = userMessageString.replaceAll("!stox ", "");
         commandStringList = command.split(" ");
-        //See if we can perform a subcommand or not
-        subCommandStatus = subcommandTool.getStatus();
+        //Get instance of SubcommandTool
+        SubcommandTool subcommandStatus = SubcommandTool.getInstance();
         switch (commandStringList[0]){
             //All the case checks need to be lowercase bc I converted the entire command to lowercase earlier
             case "help":
@@ -48,18 +46,15 @@ public class MainCommand {
                 SymbolCommand symbolCmd = new SymbolCommand();
                 botMSG = symbolCmd.Command(commandStringList[1]);
                 break;
-            case "status":
-                botMSG = subCommandStatus.toString();
-                break;
             default:
                 botMSG = "what";
                 break;
         }
 
-        return userMessage.getChannel().flatMap(channel -> channel.createMessage(botMSG));
-    }
+        if(subcommandStatus.getStatus() != SubcommandStatus.NONE){
+            //Switch for subcommands
+        }
 
-    public void setSubCommandStatus(SubcommandStatus newSubCommandStatus) {
-        subCommandStatus = newSubCommandStatus;
+        return userMessage.getChannel().flatMap(channel -> channel.createMessage(botMSG));
     }
 }

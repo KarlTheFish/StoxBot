@@ -12,13 +12,9 @@ import reactor.core.publisher.Mono;
 public class Main {
     public static DiscordClient client;
     public static MainCommand evokedCommand;
-    public static SubcommandTool subcommandTool;
 
     public static void main(String[] args) {
         client = DiscordClient.create(Environment.getDiscordToken());
-
-        //This will be needed later for subcommands
-        subcommandTool = new SubcommandTool();
 
         Mono<Void> login = client.withGateway((GatewayDiscordClient gateway) -> {
                     //Readyevent

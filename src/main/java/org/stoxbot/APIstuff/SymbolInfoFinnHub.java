@@ -5,10 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.stoxbot.Environment;
+import org.stoxbot.SubcommandTool;
 import org.stoxbot.classes.StockSearchFinnhub;
 import org.stoxbot.commands.SubcommandStatus;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.stoxbot.Main.evokedCommand;
 
@@ -20,6 +23,7 @@ public class SymbolInfoFinnHub {
     String requestURL;
     String commandResponse = "default";
     int startIndex = 0;
+    List<StockSearchFinnhub> SearchResults = new ArrayList<StockSearchFinnhub>();
 
     public SymbolInfoFinnHub(String requestString) {
         this.requestString = requestString;
@@ -43,7 +47,8 @@ public class SymbolInfoFinnHub {
                 commandResponse = "Showing the first 5 results of your search: \n";
                 resultsAmount = 5;
                 //Adding "next" subcommand
-                evokedCommand.setSubCommandStatus(SubcommandStatus.SEARCH_STOCK);
+                SubcommandTool subcommandStatus = SubcommandTool.getInstance();
+                subcommandStatus.setStatus(SubcommandStatus.SEARCH_STOCK);
             }
             else {
                 commandResponse = "Showing the results of your search: \n";
@@ -54,9 +59,17 @@ public class SymbolInfoFinnHub {
             //Make this result into a list of our custom FinnhubStockInfoClass
             List<StockSearchFinnhub> SearchResultsList = objectMapper.readValue(resultsString, new TypeReference<List<StockSearchFinnhub>>() {});
 
-            for (startIndex = 0; startIndex < resultsAmount; startIndex++){
+            //Filter the list of results to only show "Common Stock" type
+            for(int j = 0; j < SearchResultsList.size(); j++){
+                StockSearchFinnhub stock = SearchResultsList.get(j);
+                if(Objects.equals(stock.getType(), "Common Stock")){
+                    SearchResults.add(stock);
+                }
+            }
+
+            for (startIndex = 0; startIndex < SearchResults.size(); startIndex++){
                 commandResponse += "----- RESULT NO. " + (startIndex + 1) + " -----\n";
-                commandResponse += SearchResultsList.get(startIndex) + "\n";
+                commandResponse += SearchResults.get(startIndex) + "\n";
             }
 
 
@@ -65,5 +78,9 @@ public class SymbolInfoFinnHub {
         }
 
         return commandResponse;
+    }
+
+    public String getNextResults(){
+        return "";
     }
 }

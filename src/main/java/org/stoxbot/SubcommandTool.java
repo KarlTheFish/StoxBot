@@ -5,7 +5,17 @@ import org.stoxbot.commands.SubcommandStatus;
 public class SubcommandTool {
     //Class to basically tell the main command class, "Hey, you can do this subcommand now!" after commands telling this class, "Hey, we can do subcommands now"
     //Probably objectively a bad way to do this, but I did not feel like rewriting the entire code base for this
-    //Will make it better, someday, hopefully.
+    //I will make it better, someday, hopefully.
+
+    //Singleton class that is supposed to be accessible from anywhere else
+    private static SubcommandTool instance = null;
+    public static SubcommandTool getInstance() {
+        if (instance == null){
+            instance = new SubcommandTool();
+        }
+        return instance;
+    }
+
     private SubcommandStatus status;
 
     public SubcommandTool(){
