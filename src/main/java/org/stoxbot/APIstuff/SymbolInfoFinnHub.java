@@ -53,6 +53,8 @@ public class SymbolInfoFinnHub {
                 }
             }
 
+            int resultPageSize = 0;
+
             //Make sure the command displays only the first 5 results if there are more than 5
             if(SearchResults.size() > 5){
                 commandResponse = "Found " + SearchResults.size() + " results\n";
@@ -60,12 +62,14 @@ public class SymbolInfoFinnHub {
                 //Adding "next" subcommand
                 subcommandStatus.setStatus(SubcommandStatus.SEARCH_STOCK);
                 subcommandStatus.setParentObject(this);
+                resultPageSize = 5;
             }
             else {
                 commandResponse = "Showing the results of your search: \n";
+                resultPageSize = SearchResults.size();
             }
 
-            for (i = 0; i < 5; i++){
+            for (i = 0; i < resultPageSize; i++){
                 commandResponse += "----- RESULT NO. " + (i + 1) + " -----\n";
                 commandResponse += SearchResults.get(i) + "\n";
             }
